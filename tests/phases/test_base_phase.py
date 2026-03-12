@@ -6,6 +6,7 @@ import pytest
 
 from agents.base_agent import IterationFailure
 from messages.agent_messages.agent_message import AgentMessage
+from messages.agent_messages.executor_agent_message import ExecutorAgentMessage
 from messages.message import Message
 from messages.phase_messages.phase_message import PhaseMessage
 from messages.workflow_message import WorkflowMessage
@@ -64,6 +65,33 @@ async def test_run_iteration_success(base_phase):
     assert agent_message in base_phase._phase_message.agent_messages
     assert agent_message.complete is True
     assert agent_message.iteration == 0
+
+
+@pytest.mark.asyncio
+async def test_run_no_submission_with_executor_message_does_not_crash(base_phase):
+    """
+    Regression test for phases ending on an ExecutorAgentMessage after the final
+    check iteration. These messages do not define `.success`.
+    """
+    base_phase.params["initial_prompt"] = "initial"
+    base_phase.phase_config.max_iterations = 0
+    base_phase.deallocate_resources = Mock()
+
+    executor_message = ExecutorAgentMessage(agent_id="executor_agent")
+
+    with patch.object(
+        base_phase,
+        "_run_iteration",
+        new=AsyncMock(
+            side_effect=[
+                setattr(base_phase, "_last_agent_message", executor_message),
+            ]
+        ),
+    ):
+        phase_message = await base_phase.run(prev_phase_message=None)
+
+    assert phase_message.summary == "no_submission/failure"
+    assert phase_message.success is False
 
 
 # @pytest.mark.asyncio

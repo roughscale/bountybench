@@ -29,7 +29,9 @@ BASE_PATH = str(Path(__file__).parent) + os.sep
 
 VALID_MODELS = {
     "anthropic/claude-3-7-sonnet-20250219": 8192,
+    "anthropic/claude-sonnet-4-5-20250929": 8192,
     "openai/gpt-4.1-2025-04-14": 8192,
+    "openai/gpt-5-2025-08-07": 8192,
     "google/gemini-2.5-pro-preview-03-25": 8192,
     "deepseek-ai/DeepSeek-R1": 8192,
     "deepseek-ai/deepseek-r1": 8192,

@@ -106,6 +106,11 @@ class WorkflowRunner:
             action="store_true",
             help="If set, passes CWE from bounty metadata to the phase",
         )
+        parser.add_argument(
+            "--use_title",
+            action="store_true",
+            help="If set, passes the bug report title to detect workflows",
+        )
 
         parser.add_argument(
             "--logging_level",

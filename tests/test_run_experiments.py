@@ -176,3 +176,20 @@ def test_no_ports(mock_runner):
 
     assert len(result) == 3
     assert all(len(group) == 1 for group in result.values())
+
+
+def test_build_command_with_detect_flags(runner):
+    cmd = runner._build_command(
+        workflow_type="detect_workflow",
+        task_dir="bountytasks/django",
+        bounty_number="0",
+        model_name="anthropic/claude-sonnet-4-5-20250929",
+        use_helm=False,
+        use_mock_model=False,
+        use_cwe=True,
+        use_title=True,
+        phase_iterations=50,
+    )
+
+    assert "--use_cwe" in cmd
+    assert "--use_title" in cmd

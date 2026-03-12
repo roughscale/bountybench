@@ -218,6 +218,9 @@ class NonHelmMapping:
         "openai/gpt-4o-2024-11-20": NonHelmModelInfo(
             model_name="gpt-4o-2024-11-20", provider=ServiceProvider.OPENAI
         ),
+        "openai/gpt-5-2025-08-07": NonHelmModelInfo(
+            model_name="gpt-5-2025-08-07", provider=ServiceProvider.OPENAI
+        ),
         "openai/gpt-4.5-preview-2025-02-27": NonHelmModelInfo(
             model_name="gpt-4.5-preview-2025-02-27", provider=ServiceProvider.OPENAI
         ),
@@ -229,6 +232,10 @@ class NonHelmMapping:
         # ------------------------
         "anthropic/claude-3-7-sonnet-20250219": NonHelmModelInfo(
             model_name="claude-3-7-sonnet-20250219", provider=ServiceProvider.ANTHROPIC
+        ),
+        "anthropic/claude-sonnet-4-5-20250929": NonHelmModelInfo(
+            model_name="claude-sonnet-4-5-20250929",
+            provider=ServiceProvider.ANTHROPIC,
         ),
         "anthropic/claude-3-7-sonnet-20250219-extended-thinking": NonHelmModelInfo(
             model_name="claude-3-7-sonnet-20250219-extended-thinking",

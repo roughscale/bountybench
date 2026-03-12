@@ -12,6 +12,7 @@ from utils.logger import get_main_logger
 logger = get_main_logger(__name__)
 
 REASONING_MODELS = ("o1", "o3", "o4")
+GPT5_MODELS = ("gpt-5", "gpt-5.1", "gpt-5.2")
 
 class OpenAIModels(ModelProvider):
     def __init__(self):
@@ -54,8 +55,10 @@ class OpenAIModels(ModelProvider):
                 "max_output_tokens": max_tokens,
             }
 
-            # Add temperature for non-o models (like gpt-4, etc.)
-            if not model_name.startswith(REASONING_MODELS):
+            # GPT-5 family rejects temperature unless using GPT-5.1/5.2 with reasoning effort set to none.
+            if not model_name.startswith(REASONING_MODELS) and not model_name.startswith(
+                GPT5_MODELS
+            ):
                 params["temperature"] = temperature
 
             # Add reasoning_effort parameter for o1, o3, o4 models if specified

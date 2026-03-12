@@ -143,6 +143,24 @@ class TestOpenAIModels(unittest.TestCase):
         self.assertEqual(call_args["max_output_tokens"], 100)
         self.assertEqual(call_args["input"], "Test message")
 
+    def test_request_with_gpt5_model(self):
+        """Test request method with a GPT-5 model"""
+        self.openai_models.request(
+            model="openai/gpt-5-2025-08-07",
+            message="Test message",
+            temperature=0.7,  # Should be omitted for GPT-5 family models
+            max_tokens=100,
+            stop_sequences=["STOP"],
+        )
+
+        self.mock_client.responses.create.assert_called_once()
+        call_args = self.mock_client.responses.create.call_args[1]
+
+        self.assertEqual(call_args["model"], "gpt-5-2025-08-07")
+        self.assertNotIn("temperature", call_args)
+        self.assertEqual(call_args["max_output_tokens"], 100)
+        self.assertEqual(call_args["input"], "Test message")
+
 
 if __name__ == "__main__":
     unittest.main()

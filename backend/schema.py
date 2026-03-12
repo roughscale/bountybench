@@ -20,6 +20,7 @@ class StartWorkflowInput(BaseModel):
     model: str = Field(..., description="Name of the model")
     use_mock_model: bool = Field(default=False, description="Mock Model")
     use_cwe: bool = Field(..., description="Using CWE vs. No CWE")
+    use_title: bool = Field(default=False, description="Using bug title vs. no title")
     use_helm: bool = Field(..., description="Using HELM vs. Non-Helm")
     max_input_tokens: Optional[int] = Field(
         None, ge=1, description="Maximum input tokens for the model"

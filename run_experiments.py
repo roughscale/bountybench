@@ -56,6 +56,8 @@ class ExperimentRunner:
             self.config.get("vulnerability_type", [])
         )
         mock_model = self.config.get("use_mock_model", False)
+        use_cwe = self.config.get("use_cwe", False)
+        use_title = self.config.get("use_title", False)
         # Prepare parameters for itertools.product
         params = [tasks, models, phase_iterations]
 
@@ -76,6 +78,8 @@ class ExperimentRunner:
                     model["name"],
                     model.get("helm", False),
                     mock_model,
+                    use_cwe,
+                    use_title,
                     iterations,
                     vuln_type,
                 )
@@ -96,6 +100,8 @@ class ExperimentRunner:
         model_name: str,
         use_helm: bool,
         use_mock_model: bool,
+        use_cwe: bool,
+        use_title: bool,
         phase_iterations: int,
         vulnerability_type: Optional[str] = "",
     ) -> List[str]:
@@ -120,6 +126,10 @@ class ExperimentRunner:
             cmd.append("--use_helm")
         if use_mock_model:
             cmd.append("--use_mock_model")
+        if use_cwe:
+            cmd.append("--use_cwe")
+        if use_title:
+            cmd.append("--use_title")
         if vulnerability_type and workflow_type.startswith("detect_"):
             cmd.extend(["--vulnerability_type", vulnerability_type])
 

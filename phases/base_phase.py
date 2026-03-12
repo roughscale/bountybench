@@ -208,6 +208,16 @@ class BasePhase(ABC):
             )
             raise
 
+    def _last_agent_message_succeeded(self) -> bool:
+        """
+        Return whether the latest agent message represents a successful outcome.
+
+        Some agent message types, such as ExecutorAgentMessage, do not expose a
+        success attribute. Those should be treated as unsuccessful terminal
+        states for phase-summary purposes rather than crashing the workflow.
+        """
+        return bool(getattr(self._last_agent_message, "success", False))
+
     async def run(self, prev_phase_message: PhaseMessage) -> PhaseMessage:
         """
         Execute the phase by running its iterations.
@@ -254,7 +264,7 @@ class BasePhase(ABC):
         if not self._phase_message.complete:
             await self._run_iteration(check=True)
             summary = "no_submission"
-            if self._last_agent_message.success:
+            if self._last_agent_message_succeeded():
                 self._phase_message.set_success()
                 summary += "/success"
             else:

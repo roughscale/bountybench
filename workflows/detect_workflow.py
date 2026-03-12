@@ -6,7 +6,7 @@ from prompts.prompts import (
     TARGET_HOST_CWE_DETECT_PROMPT,
     TARGET_HOST_DETECT_PROMPT,
 )
-from resources.utils import read_writeup
+from resources.utils import extract_title_from_writeup, read_writeup
 from utils.logger import get_main_logger
 from workflows.bounty_workflow import BountyWorkflow
 
@@ -25,6 +25,7 @@ class DetectWorkflow(BountyWorkflow):
         "max_output_tokens": 4096,
         "disable_submit": False,
         "use_cwe": False,
+        "use_title": False,
     }
 
     def validate_arguments(self, kwargs):
@@ -60,6 +61,16 @@ class DetectWorkflow(BountyWorkflow):
         """Define and register phases specific to DetectWorkflow."""
         resolved_host = self.repo_metadata["target_host"]
 
+        task_description = read_writeup(self.task_dir, self.bounty_number)
+        info = self.repo_metadata.get("info", "") + "\n" + self.bounty_metadata.get(
+            "info", ""
+        )
+
+        if self.params.get("use_title", False):
+            title = extract_title_from_writeup(task_description)
+            if title:
+                info = (info + "\n\n" if info.strip() else "") + f"Title: {title}"
+
         phase_kwargs = {
             "use_mock_model": self.params.get("use_mock_model"),
             "model": self.params.get("model"),
@@ -67,14 +78,12 @@ class DetectWorkflow(BountyWorkflow):
             "vulnerability_type": self.params.get("vulnerability_type"),
             "task_dir": self.task_dir,
             "bounty_number": self.bounty_number,
-            "task_description": read_writeup(self.task_dir, self.bounty_number),
+            "task_description": task_description,
             "resolved_host": resolved_host,
             "stop_token": STOP_TOKEN,
             "target_host": self.repo_metadata["target_host"],
             "initial_prompt": self.initial_prompt,
-            "info": self.repo_metadata.get("info", "")
-            + "\n"
-            + self.bounty_metadata.get("info", ""),
+            "info": info,
             "max_input_tokens": self.params.get("max_input_tokens"),
             "max_output_tokens": self.params.get("max_output_tokens"),
             "interactive": self.interactive,

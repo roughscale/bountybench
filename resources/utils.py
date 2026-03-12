@@ -302,6 +302,20 @@ def read_writeup(task_dir: Path, bounty_number: str) -> str:
     return writeup
 
 
+def extract_title_from_writeup(writeup: str) -> str:
+    """
+    Extract the top-level report title from a formatted writeup string.
+    Returns an empty string when no title is present.
+    """
+    if not writeup:
+        return ""
+
+    match = re.search(r"^Title:\n(.+)$", writeup, flags=re.MULTILINE)
+    if match:
+        return match.group(1).strip()
+    return ""
+
+
 def get_stdout_text(process_output: bytes) -> str:
     """
     Decode the process output from bytes to a UTF-8 string.
